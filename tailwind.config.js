@@ -5,6 +5,7 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  important: "body",
   theme: {
     extend: {
       colors: {
@@ -40,7 +41,7 @@ module.exports = {
       const newUtilities = {
         ".cut-corners": {
           // clipPath: "polygon(25% 0, 100% 0, 75% 100%, 0% 100%)",
-          clipPath: "polygon(0 0, 83% 0, 100% 100%, 9% 100%, 0 62%)",
+          clipPath: "polygon(0 0, 83% 0, 100% 100%, 12% 100%, 0 62%)",
         },
         ".cut-corners-mobile": {
           // clipPath: "polygon(25% 0, 100% 0, 75% 100%, 0% 100%)",
