@@ -56,12 +56,14 @@ export const authOptions: NextAuthOptions = {
                     from,
                     to: email,
                     subject: "Login to College Buddies App",
-                    text: "",
+                    text: "Fallback if HTML is not allowed to be rendered",
                     html: "<p>Good, hello</p>",
                 };
 
                 // Send the email
                 await transporter.sendMail(mailOptions);
+                
+                // how to give to the UI that email was sent successfully?
             },
             secret: process.env.NEXTAUTH_SECRET,
         }),

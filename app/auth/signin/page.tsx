@@ -1,8 +1,10 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
+import { useRouter } from 'next/navigation'
 
 export default function SignInPage() {
     const emailRef = useRef<HTMLInputElement>(null); // Typed here
+    const router = useRouter();
     const [csrfToken, setCsrfToken] = useState<string>("");
 
     // Fetch CSRF token when component mounts
@@ -19,6 +21,7 @@ export default function SignInPage() {
             console.error('Email is not provided');
             return;
         }
+        // if() // Client side check if Email is valid and belongs to the college
         const response = await fetch("/api/auth/signin/email", { // use /:provider in the endpoint
             method: "POST",
             headers: {
@@ -27,9 +30,17 @@ export default function SignInPage() {
             body: JSON.stringify({ email: email, csrfToken: csrfToken }), // include CSRF token
         });
 
-        const data = await response.json();
-        console.log(data);
+        // const data = await response.json();
+        console.log(response);
         // handle your response here
+
+        if(response.status === 200) {
+            console.log('Email sent');
+            router.push('/auth/verify-request');
+        }
+
+        //redirect user to the verification page
+
     }
 
     return (
