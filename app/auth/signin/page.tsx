@@ -2,8 +2,8 @@
 import { useRef, useState, useEffect } from "react";
 
 export default function SignInPage() {
-    const emailRef = useRef();
-    const [csrfToken, setCsrfToken] = useState("");
+    const emailRef = useRef<HTMLInputElement>(null); // Typed here
+    const [csrfToken, setCsrfToken] = useState<string>("");
 
     // Fetch CSRF token when component mounts
     useEffect(() => {
@@ -13,8 +13,12 @@ export default function SignInPage() {
     }, []);
 
     async function sendCode() {
-        console.log("send code pressed. email:" + emailRef.current.value);
-        const email = emailRef.current.value;
+        console.log("send code pressed. email:" + emailRef.current?.value); // Check for existence
+        const email = emailRef.current?.value; // Check for existence
+        if (!email) {
+            console.error('Email is not provided');
+            return;
+        }
         const response = await fetch("/api/auth/signin/email", { // use /:provider in the endpoint
             method: "POST",
             headers: {

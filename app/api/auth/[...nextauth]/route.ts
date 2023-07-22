@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
                 };
 
                 // Send the email
-                return transporter.sendMail(mailOptions);
+                await transporter.sendMail(mailOptions);
             },
             secret: process.env.NEXTAUTH_SECRET,
         }),
