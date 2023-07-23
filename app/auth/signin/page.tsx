@@ -1,8 +1,10 @@
+// Sign In
+
 "use client";
 
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from 'next/navigation'
-import { signIn } from "next-auth/react"
+import { getCsrfToken, signIn } from "next-auth/react"
 
 export default function SignInPage() {
     const emailRef = useRef<HTMLInputElement>(null);
@@ -10,15 +12,32 @@ export default function SignInPage() {
 
     async function sendCode() {
         const email = emailRef.current?.value;
+        const csrfToken = await getCsrfToken();
+        
         if (!email) {
-            console.error('Email is not provided');
-            return;
+          console.error('Email is not provided');
+          return;
         }
-
-        const response = await signIn('email', { email });
-
-        console.log(response);
-    }
+      
+        try {
+          const response = await fetch('/api/emailcode', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, csrfToken: csrfToken}),
+          });
+      
+          if (response.ok) {
+            console.log('Temporary password sent to email');
+          } else {
+            console.error('Failed to send temporary password');
+          }
+        } catch (error) {
+          console.error('Error sending temporary password:', error);
+        }
+      }
+      
 
     return (
         <div>
