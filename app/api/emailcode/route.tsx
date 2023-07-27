@@ -17,13 +17,13 @@ export async function POST(request: NextRequest) {
 
     const temporaryPassword: string = "temporary123"; // Generate a temporary password
     console.log("           temporary123");
-    // const { data, error } = await supabase
-    //     .from("users")
-    //     .insert({ email, password: temporaryPassword });
+    const { data, error } = await supabase
+        .from("users")
+        .insert({ email, password: temporaryPassword });
 
-    // if (error) {
-    //     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
-    // }
+    if (error) {
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
 
     // Send the temporary password to the user's email
     const transporter = nodemailer.createTransport({
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         from: process.env.EMAIL_FROM,
         to: email,
         subject: "Your Temporary Password",
-        text: `Your temporary password is ${temporaryPassword}`,
+        text: `TEXT: Your temporary password is ${temporaryPassword}`,
         html: `<p>Your temporary password is <b>${temporaryPassword}</b></p>`,
     };
 
