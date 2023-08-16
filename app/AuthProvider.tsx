@@ -1,11 +1,46 @@
-"use client";
+// supabaseClient.ts
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-import { SessionProvider } from "next-auth/react";
+const supabase: SupabaseClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+    process.env.SUPABASE_SERVICE_ROLE_KEY as string
+);
 
-type Props = {
-  children: React.ReactNode;
-};
+export default supabase;
 
-export default function AuthProvider({ children }: Props) {
-  return <SessionProvider>{children}</SessionProvider>;
-}
+//"use client"
+
+// import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+// import type { Database } from "@/types_db";
+// // const supabase = createClientComponentClient<Database>({
+// //   supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL as string,
+// //   supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
+// // });
+// const supabase = createClientComponentClient<Database>({ req, res });
+
+
+// export default supabase;
+
+// const handleSignUp = async () => {
+//     await supabase.auth.signUp({
+//         email,
+//         password,
+//         options: {
+//             emailRedirectTo: `${location.origin}/auth/callback`,
+//         },
+//     });
+//     router.refresh();
+// };
+
+// const handleSignIn = async () => {
+//     await supabase.auth.signInWithPassword({
+//         email,
+//         password,
+//     });
+//     router.refresh();
+// };
+
+// const handleSignOut = async () => {
+//     await supabase.auth.signOut();
+//     router.refresh();
+// };
