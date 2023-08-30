@@ -14,18 +14,42 @@ import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Link from "next/link";
+import supabase from "@/utils/supabaseClient";
+import { SessionContext, SessionProvider } from "./SessionProvider";
+import { useSession } from './useSession';
 
 const pages = ["People", "Events", "Blog"];
 const settings = ["Profile", "Logout"];
 
-function ResponsiveAppBar() {
+function Header() {
+
+    const sessionData = React.useContext(SessionContext);
+    const session = sessionData?.sessionData?.session;
+
+
+    React.useEffect(() => {
+        console.log("session DATA", sessionData);
+    }, [sessionData]);
+
+    const { logout, googleLogin } = useSession();
+
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
     );
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
         null
     );
+
+
+    const handleLogIn = async () => {
+        await googleLogin();
+    };
+
+    const handleLogOut = async () => {
+        await logout();
+    };
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -127,7 +151,7 @@ function ResponsiveAppBar() {
                         sx={{
                             display: { xs: "flex", md: "none" },
                             flexGrow: 2,
-							justifyContent: "center",
+                            justifyContent: "center",
                         }}
                     >
                         <Link href={"/"}>
@@ -157,48 +181,74 @@ function ResponsiveAppBar() {
 
                     {/* Avatar with a menu */}
                     <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Profile options">
-                            <IconButton
-                                onClick={handleOpenUserMenu}
-                                sx={{ p: 0 }}
-                            >
-                                <Avatar
-                                    alt="Remy Sharp"
-                                    src="/static/images/avatar/2.jpg"
-                                />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: "45px" }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: "top",
-                                horizontal: "right",
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem
-                                    key={setting}
-                                    onClick={handleCloseUserMenu}
+                        {session ? (
+                            <Tooltip title="Profile options">
+                                <IconButton
+                                    onClick={handleOpenUserMenu}
+                                    sx={{ p: 0 }}
                                 >
-                                    <Typography textAlign="center">
-                                        {setting}
-                                    </Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
+                                    <Avatar
+                                        alt="User avatar"
+                                        src={
+                                            session?.user
+                                                ?.user_metadata?.avatar_url
+                                        }
+                                    />
+                                </IconButton>
+                            </Tooltip>
+                        ) : (
+                            <Tooltip title="SignUp / LogIn">
+                                <IconButton
+                                    onClick={handleLogIn}
+                                    sx={{ p: 0 }}
+                                >
+                                    <Box className="w-10 h-10">
+                                        <PersonAddIcon />
+                                    </Box>
+                                </IconButton>
+                            </Tooltip>
+                        )}
+
+                        {/* Profile Options when logged in*/}
+                        {session && (
+                            <Menu
+                                sx={{ mt: "45px" }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {settings.map((setting) => (
+                                    <MenuItem
+                                        key={setting}
+                                        onClick={() => {
+                                            // In arrow function you need to invoke the func right away "()"
+                                            if (setting === "Logout") {
+                                                handleLogOut();
+                                            }
+                                            handleCloseUserMenu();
+                                        }}
+                                    >
+                                        <Typography textAlign="center">
+                                            {setting}
+                                        </Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        )}
                     </Box>
                 </Toolbar>
             </Container>
         </AppBar>
     );
 }
-export default ResponsiveAppBar;
+export default Header;

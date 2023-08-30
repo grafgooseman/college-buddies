@@ -2,8 +2,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
-
-import TryNow from "@/components/TryNow";
+import TryNowButton from "@/app/TryNowButton";
 
 // import useMediaQuery from '@mui/material/useMediaQuery';
 // import { useTheme } from '@mui/material/styles'; Can't be used on a server side componenet
@@ -46,7 +45,7 @@ export default function Home() {
                             <span className="text-accent">same college</span>
                         </Typography>
                         <Box className="pt-3 w-1/2">
-                            <TryNow
+                            <TryNowButton
                                 size="medium"
                                 className="bg-accent rounded-2xl mt-2 hover:bg-hoveraccent"
                             />
@@ -64,7 +63,7 @@ export default function Home() {
                         <span className="text-accent">same college</span>
                     </Typography>
                     <Box className="pt-3">
-                        <TryNow
+                        <TryNowButton
                             size="large"
                             className="bg-accent rounded-2xl md:mt-2 hover:bg-hoveraccent"
                         />

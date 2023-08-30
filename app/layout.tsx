@@ -1,9 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import ResponsiveAppBar from "./ResponsiveAppBar";
+import Header from "./Header";
 // import { StyledEngineProvider } from "@mui/material";
-// import AuthProvider from "./AuthProvider";
+import { SessionProvider } from "./SessionProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -19,12 +19,12 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body className={inter.className}>
-                {/* <AuthProvider> */}
+                <SessionProvider>
                     {/* <StyledEngineProvider injectFirst> */}
-                    <ResponsiveAppBar />
+                    <Header />
                     {children}
                     {/* </StyledEngineProvider> */}
-                {/* </AuthProvider> */}
+                </SessionProvider>
             </body>
         </html>
     );
