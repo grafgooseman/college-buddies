@@ -16,24 +16,21 @@ import MenuItem from "@mui/material/MenuItem";
 import DonutSmallIcon from "@mui/icons-material/DonutSmall";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Link from "next/link";
-import supabase from "@/utils/supabaseClient";
 import { SessionContext, SessionProvider } from "./SessionProvider";
-import { useSession } from './useSession';
+import { useSession } from "./useSession";
 
 const pages = ["People", "Events", "Blog"];
 const settings = ["Profile", "Logout"];
 
 function Header() {
+    const { logout, googleLogin } = useSession();
 
-    const sessionData = React.useContext(SessionContext);
-    const session = sessionData?.sessionData?.session;
-
+    const { sessionData: session } = React.useContext(SessionContext) ?? {};;
+    // let session = sessionData?.sessionData;
 
     React.useEffect(() => {
-        console.log("session DATA", sessionData);
-    }, [sessionData]);
-
-    const { logout, googleLogin } = useSession();
+        console.log("header:", session);
+    }, [session]);
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
         null
@@ -41,7 +38,6 @@ function Header() {
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
         null
     );
-
 
     const handleLogIn = async () => {
         await googleLogin();
@@ -180,8 +176,9 @@ function Header() {
                     </Box>
 
                     {/* Avatar with a menu */}
+                    {/* session is undefined, that's why this cind of check, its important */}
                     <Box sx={{ flexGrow: 0 }}>
-                        {session ? (
+                        {session != null ? (
                             <Tooltip title="Profile options">
                                 <IconButton
                                     onClick={handleOpenUserMenu}
@@ -190,18 +187,15 @@ function Header() {
                                     <Avatar
                                         alt="User avatar"
                                         src={
-                                            session?.user
-                                                ?.user_metadata?.avatar_url
+                                            session?.user?.user_metadata
+                                                ?.avatar_url
                                         }
                                     />
                                 </IconButton>
                             </Tooltip>
                         ) : (
                             <Tooltip title="SignUp / LogIn">
-                                <IconButton
-                                    onClick={handleLogIn}
-                                    sx={{ p: 0 }}
-                                >
+                                <IconButton onClick={handleLogIn} sx={{ p: 0 }}>
                                     <Box className="w-10 h-10">
                                         <PersonAddIcon />
                                     </Box>
@@ -210,7 +204,8 @@ function Header() {
                         )}
 
                         {/* Profile Options when logged in*/}
-                        {session && (
+                        {/* session is undefined, that's why this cind of check, its important */}
+                        {session != null && (
                             <Menu
                                 sx={{ mt: "45px" }}
                                 id="menu-appbar"

@@ -3,46 +3,37 @@
 import React from "react";
 import Button from "@mui/material/Button";
 import supabase from "@/utils/supabaseClient";
+import { SessionContext, SessionProvider } from "./SessionProvider";
+import { useSession } from './useSession';
+import { useRouter } from 'next/navigation'
 
 export default function TryNowButton({
     size,
-    className,
+    className
 }: {
     size: "small" | "medium" | "large";
     className?: string;
 }) {
-    
-    // I am fetching the session in multiple places, I need to create a SessionContext
-    const [sessionData, setSessionData] = React.useState<any>(null);
+    const router = useRouter();
+    const { googleLogin } = useSession();
+    const [text, setText] = React.useState<string>("Try Now");
+    const {sessionData: session} = React.useContext(SessionContext) ?? {};
 
     React.useEffect(() => {
-        const fetchSession = async () => {
-            const { data, error } = await supabase.auth.getSession();
-            console.log(data, error);
-            setSessionData(data);
-        };
-        fetchSession();
-    }, []);
-
+        if (session == null) {
+          setText('Try Now');
+        } else {
+          setText('Find Friends');
+        }
+        console.log("button:", session);
+      }, [session]);
 
     const handleClick = async () => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider: "google",
-            // options: {
-            //   queryParams: {
-            //     access_type: 'offline',
-            //     prompt: 'consent',
-            //   },
-            // },
-        });
-
-        if (error) {
-            return alert(
-                "Error: " + error.message || error.toString() || "Unknown error"
-            );
+        if(session == null){
+            await googleLogin();
+        } else {
+            await router.push('/profile');
         }
-
-        console.log(data, error);
     };
 
     return (
@@ -52,7 +43,7 @@ export default function TryNowButton({
             size={size}
             className={className}
         >
-            TRY NOW
+            {text}
         </Button>
     );
 }
