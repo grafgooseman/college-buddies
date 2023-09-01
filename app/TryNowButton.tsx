@@ -2,24 +2,27 @@
 
 import React from "react";
 import Button from "@mui/material/Button";
-import supabase from "@/utils/supabaseClient";
-import { SessionContext, SessionProvider } from "./SessionProvider";
 import { useSession } from './useSession';
 import { useRouter } from 'next/navigation'
 
 export default function TryNowButton({
     size,
-    className
+    className,
+    overrideText
 }: {
     size: "small" | "medium" | "large";
     className?: string;
+    overrideText?: string;
 }) {
     const router = useRouter();
-    const { googleLogin } = useSession();
+    const { session, googleLogin } = useSession();
     const [text, setText] = React.useState<string>("Try Now");
-    const {sessionData: session} = React.useContext(SessionContext) ?? {};
 
     React.useEffect(() => {
+        if(overrideText){
+            setText(overrideText);
+            return;
+        }
         if (session == null) {
           setText('Try Now');
         } else {

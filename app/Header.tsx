@@ -18,14 +18,16 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Link from "next/link";
 import { SessionContext, SessionProvider } from "./SessionProvider";
 import { useSession } from "./useSession";
+import { useRouter } from "next/navigation";
 
 const pages = ["People", "Events", "Blog"];
 const settings = ["Profile", "Logout"];
 
 function Header() {
-    const { logout, googleLogin } = useSession();
+    const { session, logout, googleLogin } = useSession();
+    const router = useRouter();
 
-    const { sessionData: session } = React.useContext(SessionContext) ?? {};;
+    // const { sessionData: session } = React.useContext(SessionContext) ?? {};;
     // let session = sessionData?.sessionData;
 
     React.useEffect(() => {
@@ -227,6 +229,9 @@ function Header() {
                                         key={setting}
                                         onClick={() => {
                                             // In arrow function you need to invoke the func right away "()"
+                                            if (setting === "Profile") {
+                                                router.push("/profile");
+                                            }
                                             if (setting === "Logout") {
                                                 handleLogOut();
                                             }
